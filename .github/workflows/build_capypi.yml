@@ -10,35 +10,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 檢出專案程式碼與圖片區
+    - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: 設定 Python 環境
+    - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
 
-    - name: 安裝編譯相依套件
+    - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install pillow
 
-    - name: 檢查 Capybaraphoto 視覺資產與模組
+    - name: Verify assets and code
       run: |
-        echo "檢查 Capybaraphoto 圖片區..."
+        echo "Checking Capybaraphoto..."
         ls -la Capybaraphoto/
-        echo "檢查 capypi_os 主程式..."
+        echo "Checking capypi_os..."
         ls -la capypi_os/
 
-    - name: 執行雲端映像檔打包編譯
+    - name: Simulate OS Image Build
       run: |
         mkdir -p build_output
-        echo "【水豚雲端編譯】正在封裝全功能系統與視覺資產..."
-        touch build_output/CapyPiOS_v1.0_Full.img
-        echo "CapyPi OS 映像檔編譯成功！"
+        echo "CapyPi OS Image Built Successfully" > build_output/CapyPiOS_v1.0.img
 
-    - name: 上傳編譯好的映像檔 Artifact
+    - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: CapyPi-OS-Full-Image
+        name: CapyPi-OS-Image
         path: build_output/
