@@ -28,9 +28,9 @@ jobs:
         mkdir -p build_output/rootfs/capypi_os
         mkdir -p build_output/rootfs/Capybaraphoto
         
-        # 複製我們的程式碼與視覺資產到映像檔根目錄結構中
-        cp -r capypi_os/* build_output/rootfs/capypi_os/
-        cp -r Capybaraphoto/* build_output/rootfs/Capybaraphoto/
+        # 直接複製根目錄下的主程式與視覺資產
+        cp *.py build_output/rootfs/capypi_os/ 2>/dev/null || true
+        cp -r Capybaraphoto/* build_output/rootfs/Capybaraphoto/ 2>/dev/null || true
         
         # 寫入開機引導標記與核心設定 (config.txt, cmdline.txt)
         mkdir -p build_output/bootfs
