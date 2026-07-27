@@ -7,9 +7,9 @@ class CapyExtractor:
         pass
 
     def extract_archive(self, file_path, dest_dir):
-        """📦 智慧辨識主流壓縮格式，以低記憶體串流方式解壓縮"""
+        """📦 智慧低記憶體串流解壓：支援 .zip, .tar.gz, .tgz, .tar"""
         if not os.path.exists(file_path):
-            print(f"錯誤：找不到檔案 {file_path}")
+            print(f"錯誤：找不到壓縮檔 {file_path}")
             return False
 
         os.makedirs(dest_dir, exist_ok=True)
@@ -17,12 +17,12 @@ class CapyExtractor:
         if file_path.endswith('.zip'):
             with zipfile.ZipFile(file_path, 'r') as zf:
                 zf.extractall(dest_dir)
-            print("【完成】ZIP 解壓成功，記憶體保持極低！")
+            print("【完成】ZIP 檔案串流解壓成功！")
             return True
         elif file_path.endswith(('.tar.gz', '.tgz', '.tar.bz2', '.tar.xz', '.tar')):
             with tarfile.open(file_path, 'r:*') as tar:
                 tar.extractall(path=dest_dir, set_attrs=False)
-            print("【完成】TAR 系列解壓成功！")
+            print("【完成】TAR 系列檔案解壓成功！")
             return True
         else:
             print("【錯誤】不支援的壓縮格式！")

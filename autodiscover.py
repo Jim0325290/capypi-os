@@ -7,7 +7,7 @@ def start_broadcasting():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
-    print("🌐 [自動廣播 IP 服務] 已啟動，正在向區網發送訊號...")
+    print("🌐 [自動廣播 IP 服務] 已啟動...")
     
     while True:
         try:
