@@ -1,4 +1,4 @@
-name: Build and Release Capy-Computer OS
+name: Build Capy-Computer Installer
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-all:
+  build:
     runs-on: windows-latest
 
     steps:
@@ -18,26 +18,22 @@ jobs:
       with:
         python-version: '3.11'
 
-    - name: 安裝 PyInstaller 打包工具
+    - name: 安裝打包工具與專案相依套件
       run: |
         python -m pip install --upgrade pip
-        pip install pyinstaller
+        pip install pyinstaller pillow
 
-    - name: 編譯水豚電腦端控制工具 (capypi-installer.exe)
+    - name: 編譯真實的 capypi-installer.exe
       run: |
-        # 使用 PyInstaller 將主程式打包成單一獨立的 .exe 執行檔
         pyinstaller --noconsole --onefile --name capypi-installer main.py
 
     - name: 準備發布資料夾
       run: |
         mkdir -p release_packages
         copy dist\capypi-installer.exe release_packages\
-        
-        # 建立樹莓派開機映像檔佔位 (後續可對應真實基底)
-        echo "Capy-Computer OS Raspberry Pi 5 Image" > release_packages\Capy-Computer-OS-RaspberryPi5.txt
 
-    - name: 上傳真實打包好的安裝檔 Artifact
+    - name: 上傳打包好的執行檔
       uses: actions/upload-artifact@v4
       with:
-        name: Capy-Computer-OS-Universal-Packages
+        name: Capy-Computer-Installer
         path: release_packages/
