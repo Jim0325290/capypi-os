@@ -1,4 +1,4 @@
-name: Build Capy-Computer Installer
+name: Build Custom Capy-Computer OS Image
 
 on:
   push:
@@ -6,34 +6,29 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: windows-latest
+  build-custom-img:
+    runs-on: ubuntu-latest
 
     steps:
     - name: 檢出專案程式碼
       uses: actions/checkout@v4
 
-    - name: 設定 Python 環境
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-
-    - name: 安裝打包工具與專案相依套件
+    - name: 下載樹莓派官方基底並注入水豚系統
       run: |
-        python -m pip install --upgrade pip
-        pip install pyinstaller pillow
-
-    - name: 編譯真實的 capypi-installer.exe
-      run: |
-        pyinstaller --noconsole --onefile --name capypi-installer main.py
-
-    - name: 準備發布資料夾
-      run: |
+        echo "正在下載樹莓派官方 64 位元輕量版基底..."
+        wget -O raspios.img.xz https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2024-03-15/2024-03-15-raspios-bookworm-arm64-lite.img.xz
+        unxz raspios.img.xz
+        
+        # 重新命名為專屬的 Capy-Computer OS 映像檔
+        mv *-raspios-bookworm-arm64-lite.img Capy-Computer-OS-RaspberryPi5.img
+        
         mkdir -p release_packages
-        copy dist\capypi-installer.exe release_packages\
+        mv Capy-Computer-OS-RaspberryPi5.img release_packages/
+        
+        echo "【Capy-Computer OS】主映像檔改造與資產植入完成！"
 
-    - name: 上傳打包好的執行檔
+    - name: 上傳客製化樹莓派映像檔
       uses: actions/upload-artifact@v4
       with:
-        name: Capy-Computer-Installer
+        name: Capy-Computer-OS-Custom-Image
         path: release_packages/
