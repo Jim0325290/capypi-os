@@ -17,10 +17,15 @@ jobs:
       run: |
         echo "正在下載樹莓派官方 64 位元輕量版基底..."
         wget -O raspios.img.xz https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2024-03-15/2024-03-15-raspios-bookworm-arm64-lite.img.xz
+        
+        echo "正在解壓縮映像檔..."
         unxz raspios.img.xz
         
-        # 重新命名為專屬的 Capy-Computer OS 映像檔
-        mv *-raspios-bookworm-arm64-lite.img Capy-Computer-OS-RaspberryPi5.img
+        # 自動尋找當前目錄下剛解壓出來的 .img 檔案並重新命名
+        IMG_FILE=$(ls *.img | head -n 1)
+        echo "找到原始映像檔: $IMG_FILE"
+        
+        mv "$IMG_FILE" "Capy-Computer-OS-RaspberryPi5.img"
         
         mkdir -p release_packages
         mv Capy-Computer-OS-RaspberryPi5.img release_packages/
