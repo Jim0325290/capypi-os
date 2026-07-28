@@ -7,31 +7,36 @@ on:
 
 jobs:
   build-all:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - name: 檢出專案程式碼
       uses: actions/checkout@v4
 
-    - name: 準備全平台安裝檔輸出目錄
+    - name: 設定 Python 環境
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: 安裝 PyInstaller 打包工具
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller
+
+    - name: 編譯水豚電腦端控制工具 (capypi-installer.exe)
+      run: |
+        # 使用 PyInstaller 將主程式打包成單一獨立的 .exe 執行檔
+        pyinstaller --noconsole --onefile --name capypi-installer main.py
+
+    - name: 準備發布資料夾
       run: |
         mkdir -p release_packages
+        copy dist\capypi-installer.exe release_packages\
         
-        # 1. 模擬建立樹莓派專用完整映像檔
-        echo "正在打包樹莓派開機映像檔..."
-        touch release_packages/Capy-Computer-OS-RaspberryPi5.img
-        
-        # 2. 模擬建立 PC 標準電腦專用 ISO 映像檔
-        echo "正在打包 x86_64 PC 專用安裝光碟..."
-        touch release_packages/Capy-Computer-OS-PC-x86_64.iso
-        
-        # 3. 模擬建立跨平台控制執行檔
-        echo "正在打包桌面端控制工具..."
-        touch release_packages/capypi-installer.exe
-        
-        echo "【Capy-Computer OS】所有硬體平台的安裝檔已全數打包完畢！"
+        # 建立樹莓派開機映像檔佔位 (後續可對應真實基底)
+        echo "Capy-Computer OS Raspberry Pi 5 Image" > release_packages\Capy-Computer-OS-RaspberryPi5.txt
 
-    - name: 上傳所有平台的安裝檔 Artifact
+    - name: 上傳真實打包好的安裝檔 Artifact
       uses: actions/upload-artifact@v4
       with:
         name: Capy-Computer-OS-Universal-Packages
